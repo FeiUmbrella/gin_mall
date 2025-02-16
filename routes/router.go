@@ -20,8 +20,12 @@ func NewRouter() *gin.Engine {
 		v1.GET("ping", func(c *gin.Context) {
 			c.JSON(200, "success")
 		})
-		// 用户操作
+
+		// ===用户操作===
+		// 用户注册
 		v1.POST("user/register", api.UserRegister)
+		// 用户登录
+		v1.POST("user/login", api.UserLogin)
 	}
 	return r
 }

@@ -30,3 +30,9 @@ func (user *User) SetPassword(password string) error {
 	user.PasswordDigest = string(bytes) // 加密后的密码
 	return nil
 }
+
+// 密码匹配
+func (user *User) CheckPassword(password string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(user.PasswordDigest), []byte(password))
+	return err == nil
+}
