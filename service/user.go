@@ -7,6 +7,7 @@ import (
 	"gin_mall/pkg/e"
 	"gin_mall/pkg/util"
 	"gin_mall/serializer"
+	"mime/multipart"
 )
 
 type UserService struct {
@@ -147,6 +148,46 @@ func (service *UserService) Update(ctx context.Context, uId uint) serializer.Res
 		}
 	}
 
+	return serializer.Response{
+		Status: code,
+		Msg:    e.GetMsg(code),
+		Data:   serializer.BuildUser(user),
+	}
+}
+
+// Post 头像更新
+func (service *UserService) Post(ctx context.Context, uId uint, file multipart.File, fileSize int64) serializer.Response {
+	code := e.Success
+	userDao := dao.NewUserDao(ctx)
+	user, err := userDao.GetUserById(uId)
+	if err != nil {
+		code = e.Error
+		return serializer.Response{
+			Status: code,
+			Msg:    e.GetMsg(code),
+			Error:  err.Error(),
+		}
+	}
+	// 保存图片到本地
+	path, err := UploadAvatarToLocalStatic(file, uId, user.UserName)
+	if err != nil {
+		code = e.ErrorUploadFail
+		return serializer.Response{
+			Status: code,
+			Msg:    e.GetMsg(code),
+			Error:  err.Error(),
+		}
+	}
+	user.Avatar = path
+	err = userDao.UpdateUserById(uId, user) // 更新数据库相关record
+	if err != nil {
+		code = e.Error
+		return serializer.Response{
+			Status: code,
+			Msg:    e.GetMsg(code),
+			Error:  err.Error(),
+		}
+	}
 	return serializer.Response{
 		Status: code,
 		Msg:    e.GetMsg(code),
