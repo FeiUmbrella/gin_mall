@@ -5,9 +5,11 @@ const (
 	Error         = 500
 	InvalidParams = 400 // 非法参数
 
-	ErrorExistUser      = 30001 // 用户已存在
-	ErrorFailEncryption = 30002
-	ErrorUserNotFound   = 30003 // 用户不存在
-	ErrorNotCompare     = 30004
-	ErrorAuthToken      = 30005
+	ErrorExistUser             = 30001 // 用户已存在
+	ErrorFailEncryption        = 30002
+	ErrorUserNotFound          = 30003 // 用户不存在
+	ErrorNotCompare            = 30004
+	ErrorAuthToken             = 30005
+	ErrorAuthCheckTokenTimeOut = 30006
+	ErrorAuthCheckTokenFail    = 3007
 )

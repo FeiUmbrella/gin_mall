@@ -26,6 +26,13 @@ func NewRouter() *gin.Engine {
 		v1.POST("user/register", api.UserRegister)
 		// 用户登录
 		v1.POST("user/login", api.UserLogin)
+
+		authed := v1.Group("/")      // 需要登录保护,将路由封装在v1下
+		authed.Use(middleware.JWT()) // 使用JWT中间件
+		{
+			// 用户信息修改
+			authed.PUT("user", api.UserUpdate)
+		}
 	}
 	return r
 }

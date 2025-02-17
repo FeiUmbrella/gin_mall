@@ -17,7 +17,7 @@ type UserService struct {
 	Key string `json:"key" form:"key"` // 加密的密钥，一开始就要定义好的密钥，这里采用简洁形式只在前端进行验证
 }
 
-// 用户注册逻辑
+// Register 用户注册
 func (service *UserService) Register(ctx context.Context) serializer.Response {
 	var user model.User
 	code := e.Success
@@ -79,7 +79,7 @@ func (service *UserService) Register(ctx context.Context) serializer.Response {
 	}
 }
 
-// 用户登录
+// Login 用户登录
 func (service *UserService) Login(ctx context.Context) serializer.Response {
 	var user *model.User
 	code := e.Success
@@ -119,5 +119,37 @@ func (service *UserService) Login(ctx context.Context) serializer.Response {
 		Status: code,
 		Msg:    e.GetMsg(code),
 		Data:   serializer.TokenData{User: serializer.BuildUser(user), Token: token},
+	}
+}
+
+// Update 用户信息修改
+func (service *UserService) Update(ctx context.Context, uId uint) serializer.Response {
+	code := e.Success
+
+	// 根据 uid 找到数据库对应 record
+	userDao := dao.NewUserDao(ctx)
+	user, err := userDao.GetUserById(uId)
+
+	// 即使是在登录状态，修改任何信息都需要先输入密码验证身份，以确保是号主操作
+	// todo:验证密码
+
+	// 修改昵称nickname
+	if service.NickName != "" {
+		user.NickName = service.NickName
+	}
+	err = userDao.UpdateUserById(uId, user)
+	if err != nil {
+		code = e.Error
+		return serializer.Response{
+			Status: code,
+			Msg:    e.GetMsg(code),
+			Error:  err.Error(),
+		}
+	}
+
+	return serializer.Response{
+		Status: code,
+		Msg:    e.GetMsg(code),
+		Data:   serializer.BuildUser(user),
 	}
 }

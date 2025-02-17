@@ -28,7 +28,19 @@ func (dao *UserDao) ExistOrNotByUserName(username string) (user *model.User, exi
 	return user, true, nil
 }
 
-// 创建用户
+// CreateUser 创建用户
 func (dao *UserDao) CreateUser(user *model.User) error {
 	return dao.DB.Model(&model.User{}).Create(user).Error
+}
+
+// GetUserById 数据库中查找uId对应的record
+func (dao *UserDao) GetUserById(uId uint) (*model.User, error) {
+	var user *model.User
+	err := dao.DB.Model(&model.User{}).Where("id = ?", uId).First(&user).Error
+	return user, err
+}
+
+// UpdateUserById 更新数据库中uId对应的record
+func (dao *UserDao) UpdateUserById(uId uint, user *model.User) error {
+	return dao.DB.Model(&model.User{}).Where("id = ?", uId).Updates(user).Error
 }

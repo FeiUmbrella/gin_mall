@@ -1,6 +1,7 @@
 package v1
 
 import (
+	"gin_mall/pkg/util"
 	"gin_mall/service"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -22,6 +23,19 @@ func UserLogin(c *gin.Context) {
 	var userLogin service.UserService // 请求参数
 	if err := c.ShouldBind(&userLogin); err == nil {
 		res := userLogin.Login(c.Request.Context())
+		c.JSON(http.StatusOK, res)
+	} else {
+		c.JSON(http.StatusBadRequest, err)
+	}
+}
+
+func UserUpdate(c *gin.Context) {
+	var userUpdate service.UserService // 请求参数
+	// 从http的header中取出token，验证token
+	claims, _ := util.ParseToken(c.GetHeader("Authorization"))
+	if err := c.ShouldBind(&userUpdate); err == nil {
+		// claims中存放着登录用户的ID，将其传入service层的Update函数中
+		res := userUpdate.Update(c.Request.Context(), claims.ID)
 		c.JSON(http.StatusOK, res)
 	} else {
 		c.JSON(http.StatusBadRequest, err)
