@@ -38,6 +38,9 @@ func NewRouter() *gin.Engine {
 			authed.POST("user/sending-email", api.SendEmail)
 			// 验证向用户邮箱发送的包含token的链接
 			authed.POST("user/valid-email", api.ValidEmail)
+
+			// 显示用户金额
+			authed.POST("money", api.ShowMoney)
 		}
 	}
 	return r

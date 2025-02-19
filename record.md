@@ -178,3 +178,33 @@ AES 解密过程是加密过程的逆过程，使用相同的轮密钥，但操�
 >- **PUT** 和 **PATCH** 用于更新资源，PUT更新整个资源，PATCH更新部分资源。
 >- **DELETE** 用于删除资源。
 >- **HEAD**、**OPTIONS**、**TRACE** 和 **CONNECT** 则用于特定场景，如获取元数据、调试或建立隧道
+
+## 运行时遇到的BUG
+### http请求中params和Body的区别
+当我将`key: Ek1+Ep1==Ek2+Ep2`放入 params 传递到后端，发现接收的为 `key:Ek1 Ep1==Ek2 Ep2`
+不能完整显示导致运行出错。
+
+> **params（URL参数）**： 
+> * 数据附加在URL的末尾，格式为?key1=value1&key2=value2。 
+> * 例如：https://example.com/api?user_id=123&name=John。
+> * 数据在URL中可见，因此不适合传递敏感信息（如密码、令牌等）。
+> > URL编码规则：
+> > URL参数中不能直接包含特殊字符（如+、=、:、/等），因为这些字符在URL中有特殊含义。
+> >
+> > 例如：
+> >
+> > `+` 在URL中表示空格。
+> >
+> > `=` 用于分隔键值对。
+> >
+> > `:` 用于协议和端口号。
+> > 如果直接将这些字符放入URL参数中，它们会被解析或转义，导致数据不完整或错误。
+
+> **Body（请求体）**：
+>
+> * 数据放在HTTP请求的正文部分，不会显示在URL中。 
+> * 适合传递大量数据或敏感信息。
+> 常见的Body格式有：
+> > * application/x-www-form-urlencoded（表单格式）
+> > * application/json（JSON格式）
+> > * multipart/form-data（文件上传）

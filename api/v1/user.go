@@ -73,10 +73,23 @@ func SendEmail(c *gin.Context) {
 
 func ValidEmail(c *gin.Context) {
 	var validEmail service.ValidEmailService
-	// 将http传来的参数放进定义的validEmail结构体中
+	// 这里http没有传参数，相关信息在header中的“Authorization”中
 	if err := c.ShouldBind(&validEmail); err == nil {
 		// claims中存放着登录用户的ID，将其传入service层的Update函数中
 		res := validEmail.Valid(c.Request.Context(), c.GetHeader("Authorization"))
+		c.JSON(http.StatusOK, res)
+	} else {
+		c.JSON(http.StatusBadRequest, err)
+	}
+}
+
+func ShowMoney(c *gin.Context) {
+	var showMoney service.ShowMoneyService
+	claims, _ := util.ParseToken(c.GetHeader("Authorization"))
+	// 将http传来的参数放进定义的showMoney结构体中
+	if err := c.ShouldBind(&showMoney); err == nil {
+		// claims中存放着登录用户的ID，将其传入service层的Update函数中
+		res := showMoney.Show(c.Request.Context(), claims.ID)
 		c.JSON(http.StatusOK, res)
 	} else {
 		c.JSON(http.StatusBadRequest, err)
