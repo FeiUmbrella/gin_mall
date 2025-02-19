@@ -34,6 +34,10 @@ func NewRouter() *gin.Engine {
 			authed.PUT("user", api.UserUpdate)
 			// 上传头像
 			authed.POST("avatar", api.UploadAvatar)
+			// 发送邮件
+			authed.POST("user/sending-email", api.SendEmail)
+
+			authed.POST("user/vaild-email", api.ValidEmail)
 		}
 	}
 	return r

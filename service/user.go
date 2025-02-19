@@ -2,12 +2,15 @@ package service
 
 import (
 	"context"
+	"gin_mall/conf"
 	"gin_mall/dao"
 	"gin_mall/model"
 	"gin_mall/pkg/e"
 	"gin_mall/pkg/util"
 	"gin_mall/serializer"
+	"gopkg.in/mail.v2"
 	"mime/multipart"
+	"strings"
 )
 
 type UserService struct {
@@ -16,6 +19,12 @@ type UserService struct {
 	Password string `json:"password" form:"password"`
 	// todo:前端+后端双重验证
 	Key string `json:"key" form:"key"` // 加密的密钥，一开始就要定义好的密钥，这里采用简洁形式只在前端进行验证
+}
+type SendEmailService struct {
+	Email    string `json:"email" form:"email"`
+	Password string `json:"password" form:"password"`
+	// 1.绑定邮箱 2.解绑邮箱 3.改密码
+	OperationType uint `json:"operation_type" form:"operation_type"`
 }
 
 // Register 用户注册
@@ -131,9 +140,6 @@ func (service *UserService) Update(ctx context.Context, uId uint) serializer.Res
 	userDao := dao.NewUserDao(ctx)
 	user, err := userDao.GetUserById(uId)
 
-	// 即使是在登录状态，修改任何信息都需要先输入密码验证身份，以确保是号主操作
-	// todo:验证密码
-
 	// 修改昵称nickname
 	if service.NickName != "" {
 		user.NickName = service.NickName
@@ -192,5 +198,56 @@ func (service *UserService) Post(ctx context.Context, uId uint, file multipart.F
 		Status: code,
 		Msg:    e.GetMsg(code),
 		Data:   serializer.BuildUser(user),
+	}
+}
+
+// Send 发送邮件
+func (service *SendEmailService) Send(ctx context.Context, uId uint) serializer.Response {
+	code := e.Success
+	var address string
+	var notice *model.Notice // 绑定邮箱 修改密码 模板通知
+	// 将 http中传来的参数进行jwt加密，其中uId参数用来辨识用户
+	token, err := util.GenerateEmailToken(uId, service.OperationType, service.Email, service.Password)
+	if err != nil {
+		code = e.ErrorAuthToken
+		return serializer.Response{
+			Status: code,
+			Msg:    e.GetMsg(code),
+			Error:  err.Error(),
+		}
+	}
+	noticeDao := dao.NewNoticeDao(ctx)
+	notice, err = noticeDao.GetNoticeById(service.OperationType)
+	if err != nil {
+		code = e.Error
+		return serializer.Response{
+			Status: code,
+			Msg:    e.GetMsg(code),
+			Error:  err.Error(),
+		}
+	}
+
+	address = conf.ValidEmail + token // 发送内容
+	mailStr := notice.Text
+	mailText := strings.Replace(mailStr, "Email", address, -1) // 将mailStr中的“Email”全部替换为address
+	m := mail.NewMessage()
+	m.SetHeader("From", conf.SmtpEmail) // 发送方邮箱
+	m.SetHeader("To", service.Email)    // 接收方邮箱
+	m.SetHeader("Subject", "gin_mall test")
+	m.SetBody("text/html", mailText)
+	d := mail.NewDialer(conf.SmtpHost, 465, conf.SmtpEmail, conf.SmtpPass)
+	d.StartTLSPolicy = mail.MandatoryStartTLS
+	if err = d.DialAndSend(m); err != nil {
+		code = e.ErrorSendEmail
+		return serializer.Response{
+			Status: code,
+			Msg:    e.GetMsg(code),
+			Error:  err.Error(),
+		}
+	}
+
+	return serializer.Response{
+		Status: code,
+		Msg:    e.GetMsg(code),
 	}
 }

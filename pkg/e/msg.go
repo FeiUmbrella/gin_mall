@@ -14,6 +14,7 @@ var MsgFlags = map[int]string{
 	ErrorAuthCheckTokenTimeOut: "token 过期",
 	ErrorAuthCheckTokenFail:    "token错误",
 	ErrorUploadFail:            "图片上传错误",
+	ErrorSendEmail:             "邮件发送失败",
 
 	// product 模块错误
 }

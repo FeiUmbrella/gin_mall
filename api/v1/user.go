@@ -56,3 +56,29 @@ func UploadAvatar(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, err)
 	}
 }
+
+func SendEmail(c *gin.Context) {
+	var sendEmail service.SendEmailService
+	// 从http的header中取出token，解析token中的参数
+	claims, _ := util.ParseToken(c.GetHeader("Authorization"))
+	// 将http传来的参数放进定义的sendEmail结构体中
+	if err := c.ShouldBind(&sendEmail); err == nil {
+		// claims中存放着登录用户的ID，将其传入service层的Update函数中
+		res := sendEmail.Send(c.Request.Context(), claims.ID)
+		c.JSON(http.StatusOK, res)
+	} else {
+		c.JSON(http.StatusBadRequest, err)
+	}
+}
+
+func ValidEmail(c *gin.Context) {
+	var validEmail service.ValidEmailService
+	// 将http传来的参数放进定义的validEmail结构体中
+	if err := c.ShouldBind(&validEmail); err == nil {
+		// claims中存放着登录用户的ID，将其传入service层的Update函数中
+		res := validEmail.Send(c.Request.Context(), c.GetHeader("Authorization"))
+		c.JSON(http.StatusOK, res)
+	} else {
+		c.JSON(http.StatusBadRequest, err)
+	}
+}
