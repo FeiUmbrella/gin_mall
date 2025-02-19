@@ -76,7 +76,7 @@ func ValidEmail(c *gin.Context) {
 	// 将http传来的参数放进定义的validEmail结构体中
 	if err := c.ShouldBind(&validEmail); err == nil {
 		// claims中存放着登录用户的ID，将其传入service层的Update函数中
-		res := validEmail.Send(c.Request.Context(), c.GetHeader("Authorization"))
+		res := validEmail.Valid(c.Request.Context(), c.GetHeader("Authorization"))
 		c.JSON(http.StatusOK, res)
 	} else {
 		c.JSON(http.StatusBadRequest, err)
