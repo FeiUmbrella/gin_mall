@@ -17,6 +17,7 @@ var MsgFlags = map[int]string{
 	ErrorSendEmail:             "邮件发送失败",
 
 	// product 模块错误
+	ErrorProductImgUpload: "商品图片上传错误",
 }
 
 // GetMsg 获取状态码对应的信息

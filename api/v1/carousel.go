@@ -1,6 +1,7 @@
 package v1
 
 import (
+	"gin_mall/pkg/util"
 	"gin_mall/service"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -13,6 +14,7 @@ func ListCarousel(c *gin.Context) {
 		res := listCarousel.List(c.Request.Context())
 		c.JSON(http.StatusOK, res)
 	} else {
-		c.JSON(http.StatusBadRequest, err)
+		c.JSON(http.StatusBadRequest, ErrorResponse(err))
+		util.LogrusObj.Infoln("ListCarousel Api Error: ", err)
 	}
 }

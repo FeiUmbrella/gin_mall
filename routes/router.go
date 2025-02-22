@@ -43,6 +43,9 @@ func NewRouter() *gin.Engine {
 
 			// 显示用户金额
 			authed.POST("money", api.ShowMoney)
+
+			// 创建商品--用户都可以创建商品. 类似咸鱼
+			authed.POST("product", api.CreateProduct)
 		}
 	}
 	return r
