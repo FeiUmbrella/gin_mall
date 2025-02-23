@@ -164,3 +164,24 @@ func (service *ProductService) Search(ctx context.Context) serializer.Response {
 	}
 	return serializer.BuildListResponse(serializer.BuildProducts(product), uint(count))
 }
+
+// Show 显示特定id商品的详细信息
+func (service *ProductService) Show(ctx context.Context, id string) serializer.Response {
+	code := e.Success
+	pid, _ := strconv.Atoi(id)
+	productDao := dao.NewProductDao(ctx)
+	product, err := productDao.GetProductById(uint(pid))
+	if err != nil {
+		code = e.Error
+		return serializer.Response{
+			Status: code,
+			Msg:    e.GetMsg(code),
+			Error:  err.Error(),
+		}
+	}
+	return serializer.Response{
+		Status: code,
+		Data:   serializer.BuildProduct(product),
+		Msg:    e.GetMsg(code),
+	}
+}
