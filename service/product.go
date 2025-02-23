@@ -145,3 +145,22 @@ func (service *ProductService) List(ctx context.Context) serializer.Response {
 
 	return serializer.BuildListResponse(serializer.BuildProducts(products), uint(total))
 }
+
+// Search 搜索商品
+func (service *ProductService) Search(ctx context.Context) serializer.Response {
+	code := e.Success
+	if service.PageSize == 0 {
+		service.PageSize = 15
+	}
+	productDao := dao.NewProductDao(ctx)
+	product, count, err := productDao.SearchProduct(service.Info, service.BasePage)
+	if err != nil {
+		code = e.Error
+		return serializer.Response{
+			Status: code,
+			Msg:    e.GetMsg(code),
+			Error:  err.Error(),
+		}
+	}
+	return serializer.BuildListResponse(serializer.BuildProducts(product), uint(count))
+}

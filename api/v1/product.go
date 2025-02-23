@@ -34,3 +34,14 @@ func ListProduct(c *gin.Context) {
 		util.LogrusObj.Infoln("ListProduct Api Error: ", err)
 	}
 }
+
+func SearchProduct(c *gin.Context) {
+	var searchProductService service.ProductService
+	if err := c.ShouldBind(&searchProductService); err == nil {
+		res := searchProductService.Search(c.Request.Context())
+		c.JSON(http.StatusOK, res)
+	} else {
+		c.JSON(http.StatusBadRequest, ErrorResponse(err))
+		util.LogrusObj.Infoln("SearchProduct Api Error: ", err)
+	}
+}

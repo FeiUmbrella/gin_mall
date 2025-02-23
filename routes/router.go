@@ -50,6 +50,8 @@ func NewRouter() *gin.Engine {
 
 			// 创建商品--用户都可以创建商品. 类似咸鱼
 			authed.POST("product", api.CreateProduct)
+			// 搜索商品
+			authed.POST("products", api.SearchProduct)
 		}
 	}
 	return r
