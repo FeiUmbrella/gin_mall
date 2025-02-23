@@ -7,10 +7,10 @@ import (
 	"net/http"
 )
 
-func ListCarousel(c *gin.Context) {
-	var listCarousel service.CarouselService // 请求参数
-	if err := c.ShouldBind(&listCarousel); err == nil {
-		res := listCarousel.List(c.Request.Context())
+func ListProductImg(c *gin.Context) {
+	var listProductImgService service.ListProductImg // 请求参数
+	if err := c.ShouldBind(&listProductImgService); err == nil {
+		res := listProductImgService.List(c.Request.Context(), c.Param("id"))
 		c.JSON(http.StatusOK, res)
 	} else {
 		c.JSON(http.StatusBadRequest, ErrorResponse(err))
