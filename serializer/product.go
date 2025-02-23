@@ -42,3 +42,11 @@ func BuildProduct(product *model.Product) ProductVO {
 		BossAvatar:    conf.Host + conf.HttpPort + conf.AvatarPath + product.BossAvatar,
 	}
 }
+
+func BuildProducts(products []*model.Product) []ProductVO {
+	var productVOs []ProductVO
+	for _, product := range products {
+		productVOs = append(productVOs, BuildProduct(product))
+	}
+	return productVOs
+}

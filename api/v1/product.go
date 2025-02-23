@@ -23,3 +23,14 @@ func CreateProduct(c *gin.Context) {
 		util.LogrusObj.Infoln("CreateProduct Api Error: ", err)
 	}
 }
+
+func ListProduct(c *gin.Context) {
+	var listProductService service.ProductService
+	if err := c.ShouldBind(&listProductService); err == nil {
+		res := listProductService.List(c.Request.Context())
+		c.JSON(http.StatusOK, res)
+	} else {
+		c.JSON(http.StatusBadRequest, ErrorResponse(err))
+		util.LogrusObj.Infoln("ListProduct Api Error: ", err)
+	}
+}

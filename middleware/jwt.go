@@ -7,6 +7,8 @@ import (
 	"time"
 )
 
+// JWT 中间件，先对用户通过http传来的token进行解密验证，来确定封装在token中的用户信息。
+// 如果解密验证不成功，不进行后续处理直接返回
 func JWT() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var code int
