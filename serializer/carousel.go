@@ -18,8 +18,8 @@ func BuildCarousel(item *model.Carousel) Carousel {
 	}
 }
 
-func BuildCarousels(item []model.Carousel) (carousels []Carousel) {
-	for _, item := range item {
+func BuildCarousels(items []model.Carousel) (carousels []Carousel) {
+	for _, item := range items {
 		carousels = append(carousels, BuildCarousel(&item))
 	}
 	return

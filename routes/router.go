@@ -36,6 +36,8 @@ func NewRouter() *gin.Engine {
 		v1.GET("products/:id", api.ShowProduct)
 		// 获取商品的图片信息
 		v1.GET("imgs/:id", api.ListProductImg)
+		// 获取商品分类
+		v1.GET("categories", api.ListCategories)
 
 		authed := v1.Group("/")      // 需要登录保护,将路由封装在v1下
 		authed.Use(middleware.JWT()) // 使用JWT中间件

@@ -18,7 +18,7 @@ func NewCarouselDaoByDB(db *gorm.DB) *CarouselDao {
 	return &CarouselDao{db}
 }
 
-// GetCarouselById 数据库中查找uId对应的 carousel record
+// ListCarousel 显示所有轮播图
 func (dao *CarouselDao) ListCarousel() ([]model.Carousel, error) {
 	var carousel []model.Carousel
 	err := dao.DB.Model(&model.Carousel{}).Find(&carousel).Error
