@@ -18,6 +18,9 @@ var MsgFlags = map[int]string{
 
 	// product 模块错误
 	ErrorProductImgUpload: "商品图片上传错误",
+
+	// favorite 模块错误
+	ErrorFavoriteExist: "该商品已收藏",
 }
 
 // GetMsg 获取状态码对应的信息
