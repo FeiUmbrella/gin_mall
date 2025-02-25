@@ -65,6 +65,18 @@ func NewRouter() *gin.Engine {
 			authed.POST("favorites", api.CreateFavorites)
 			// 删除收藏
 			authed.DELETE("favorites/:id", api.DeleteFavorites)
+
+			// 上传地址
+			authed.POST("addresses/", api.CreateAddress)
+			// 获取某一地址
+			authed.GET("addresses/:id", api.GetAddress)
+			// 显示所有地址
+			authed.GET("addresses/", api.ListAddress)
+			// 更新某一地址
+			authed.PUT("addresses/:id", api.UpdateAddress)
+			// 删除地址
+			authed.DELETE("addresses/:id", api.DeleteAddress)
+
 		}
 	}
 	return r

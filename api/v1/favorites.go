@@ -1,7 +1,6 @@
 package v1
 
 import (
-	"fmt"
 	"gin_mall/pkg/util"
 	"gin_mall/service"
 	"github.com/gin-gonic/gin"
@@ -26,7 +25,6 @@ func CreateFavorites(c *gin.Context) {
 	var createFavorites service.FavoritesService
 	claims, _ := util.ParseToken(c.GetHeader("Authorization"))
 	if err := c.ShouldBind(&createFavorites); err == nil {
-		fmt.Println(createFavorites.BossId, createFavorites.ProductId)
 		res := createFavorites.Create(c.Request.Context(), claims.ID)
 		c.JSON(http.StatusOK, res)
 	} else {

@@ -12,7 +12,7 @@ import (
 )
 
 type FavoritesService struct {
-	FavoriteId uint `json:"favorite_id" from:"favorite_id"`
+	FavoriteId uint `json:"favorite_id" form:"favorite_id"`
 	ProductId  uint `json:"product_id" form:"product_id"`
 	BossId     uint `json:"boss_id" form:"boss_id"`
 	model.BasePage
