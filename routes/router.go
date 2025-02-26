@@ -94,6 +94,9 @@ func NewRouter() *gin.Engine {
 			authed.GET("order/:id", api.ShowOrder)
 			// 删除订单
 			authed.DELETE("order/:id", api.DeleteOrder)
+
+			// 支付功能
+			authed.POST("paydown", api.OrderPay)
 		}
 	}
 	return r

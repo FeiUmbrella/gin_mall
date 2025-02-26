@@ -31,7 +31,7 @@ func (dao *OrderDao) ListOrderByCondition(condition map[string]interface{}, page
 	if err != nil {
 		return
 	}
-	
+
 	err = dao.Model(&model.Order{}).
 		Where(condition).
 		Offset((page.PageNum - 1) * page.PageSize).
@@ -49,5 +49,10 @@ func (dao *OrderDao) DeleteOrderByUserId(uId, cId uint) (err error) {
 // GetOrderByOId 通过oId获取某一订单
 func (dao *OrderDao) GetOrderByOId(uId, oId uint) (order *model.Order, err error) {
 	err = dao.Model(&model.Order{}).Where("id=? AND user_id=?", oId, uId).First(&order).Error
+	return
+}
+
+func (dao *OrderDao) UpdateOrderById(id uint, order *model.Order) (err error) {
+	err = dao.DB.Model(&model.Order{}).Where("id = ?", id).Updates(order).Error
 	return
 }
