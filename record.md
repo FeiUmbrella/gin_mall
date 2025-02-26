@@ -48,7 +48,7 @@ func UserRegister(c *gin.Context) {
 ```go
 func (service UserService) Register(ctx context.Context) serializer.Response{}
 ```
-## pkg/util
+## pkg/util（中间件）
 ### AES加密算法
 AES 加密的基本概念
 * 对称加密：AES 是对称加密算法，意味着加密和解密使用相同的密钥。发送方和接收方必须共享相同的密钥才能安全通信。
@@ -208,3 +208,18 @@ AES 解密过程是加密过程的逆过程，使用相同的轮密钥，但操�
 > > * application/x-www-form-urlencoded（表单格式）
 > > * application/json（JSON格式）
 > > * multipart/form-data（文件上传）
+
+## 订单业务
+1. 利用时间戳做随机数种子来生成9位订单编号
+```go
+number := fmt.Sprintf("%09v", rand.New(rand.NewSource(time.Now().UnixNano())).Int31n(10000000))
+```
+> `time.Now().UnixNano()`:获取当前时间的纳秒级时间戳，作为随机数生成器的种子。
+>
+> `rand.NewSource(time.Now().UnixNano())`:使用纳秒级时间戳创建一个随机数生成器的种子源（rand.Source）。
+>
+> `rand.New(rand.NewSource(...))`:使用上一步创建的种子源初始化一个新的随机数生成器（*rand.Rand）
+>
+> `.Int31n(10000000)`:使用随机数生成器生成一个范围在 [0, 10000000) 之间的随机整数（int32 类型）
+>
+> `fmt.Sprintf("%09v", ...)`:将生成的随机数格式化为一个长度为 9 的字符串。`%v`：默认格式输出值。 `09`：总长度为 9，不足部分用前导零填充。
